@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>360deg</title>
+</head>
+<body>
+    <div class="card" id="card"></div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+<style>
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.card {
+    height: 50vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background-image: url(https://raw.githubusercontent.com/JohnPaulInso/mux/main/muxlower/1.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: grab;
+}
+</style>
+
+<script>
+const card = document.getElementById('card');
+let isDragging = false;
+let startX;
+let currentImage = 1; // Initially set to the first image
+let rotationTimeout;
+
+card.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    card.style.cursor = 'grabbing';
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+
+    // Calculate the movement distance
+    const moveX = startX - e.clientX;
+
+    // Adjust this factor to control the speed of rotation
+    const sensitivityFactor =.5; // Decreased sensitivity for smoother transition
+
+    // Calculate the change in image based on movement distance
+    const numImages = 35;
+    const imageSize = 100 / numImages;
+    const imageChange = Math.round(moveX * sensitivityFactor / (window.innerWidth / 1) * numImages / 1);
+ 
+    // Update current image
+    currentImage += imageChange;
+
+    // Ensure current image stays within range
+    if (currentImage > numImages) {
+        currentImage = 1;
+    } else if (currentImage < 1) {
+        currentImage = numImages;
+    }
+
+    // Construct the URL of the image
+    const imageURL = `https://raw.githubusercontent.com/JohnPaulInso/mux/main/muxlower/${currentImage}.jpg`;
+
+    // Update background image
+    card.style.backgroundImage = `url(${imageURL})`;
+
+    // Reset the rotation timeout
+    clearTimeout(rotationTimeout);
+    rotationTimeout = setTimeout(() => {
+        isDragging = false;
+        card.style.cursor = 'grab';
+    }, 200); // Adjust the delay here (in milliseconds) to slow down the transition between images
+});
+
+document.addEventListener('mouseup', () => {
+    if (isDragging) {
+        isDragging = false;
+        card.style.cursor = 'grab';
+    }
+});
+
+// Prevent resetting the image when mouse leaves the slider
+card.addEventListener('mouseleave', () => {
+    if (isDragging) {
+        isDragging = false;
+        card.style.cursor = 'grab';
+    }
+});
+</script>
