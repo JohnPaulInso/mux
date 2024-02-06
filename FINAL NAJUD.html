@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>360deg</title>
+</head>
+<body>
+    <div class="card" id="card"></div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+<style>
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.card {
+    height: 50vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background-image: url(https://raw.githubusercontent.com/JohnPaulInso/mux/main/MUXLOWLOW/1.webp);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: grab;
+}
+</style>
+
+
+
+
+
+
+<script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const card = document.getElementById('card');
+let isDragging = false;
+let startX;
+let currentImage = 1; // Initially set to the first image
+let previousMoveX = 0;
+
+card.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    card.style.cursor = 'grabbing';
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+
+    // Calculate the movement distance
+    const moveX = startX - e.clientX;
+    const sensitivity = 50; // Change 1 image per 50px
+
+    // Update current image based on sensitivity
+    if (Math.abs(moveX - previousMoveX) >= sensitivity) {
+        const numImages = 36;
+        const imageChange = Math.sign(moveX - previousMoveX);
+        currentImage += imageChange;
+
+        // Ensure current image stays within range
+        if (currentImage > numImages) {
+            currentImage = 1;
+        } else if (currentImage < 1) {
+            currentImage = numImages;
+        }
+
+        // Construct the URL of the image
+        const imageURL = `https://raw.githubusercontent.com/JohnPaulInso/mux/main/MUXLOWLOW/${currentImage}.webp`;
+
+        // Update background image
+        card.style.backgroundImage = `url(${imageURL})`;
+
+        // Update previous moveX
+        previousMoveX = moveX;
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    if (isDragging) {
+        isDragging = false;
+        card.style.cursor = 'grab';
+        previousMoveX = 0;
+    }
+});
+
+// Prevent resetting the image when mouse leaves the slider
+card.addEventListener('mouseleave', () => {
+    if (isDragging) {
+        isDragging = false;
+        card.style.cursor = 'grab';
+        previousMoveX = 0;
+    }
+});
+
+
+
+
+
+</script>
+
